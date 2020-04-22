@@ -1,0 +1,29 @@
+{% extends "mybook/base.html" %}
+{% block title %} Search {% endblock %}
+
+{% block body %}
+{% if request.user.is_authenticated %}
+{% if message %}
+  <div class="alert alert-primary text-center" role="alert">
+    {{ message }}
+  </div>
+{% endif %}
+<div class="row" style="padding-top: 40px;">
+  <div class="col-md-8 offset-md-2">
+    <br/>
+    <h4 style="margin-bottom: 30px;">Search Your Book:</h4>
+    <form action="{% url 'search' %}" method="get">
+      {% csrf_token %}
+      <div class="form-group">
+          <input name="search" type="text" placeholder="Search..." class="form-control">
+      </div>
+      <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+  </div>
+</div>
+{% else %}
+{% load static %}
+  <img style="max-width: 100%; height:auto;" src="{% static 'images/home.jpg' %}" alt="My image">
+{% endif %}
+
+{% endblock %}

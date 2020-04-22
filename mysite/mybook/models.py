@@ -1,16 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
 import datetime
-from django.utils.timezone import utc
-
 # Create your models here.
-class User(models.Model):
-  username = models.CharField(max_length=60)
-  password = models.CharField(max_length=128)
-
-  def __str__(self):
-    return f"{self.id}: {self.username}"
-
-
 class Book(models.Model):
   isbn = models.CharField(max_length=128)
   title = models.CharField(max_length=60)
@@ -23,10 +14,10 @@ class Book(models.Model):
   
 class Review(models.Model):
   content = models.TextField(default='')
-  createdAt = models.DateTimeField(default=datetime.datetime(2015, 7, 20, 15, 30, 4, 971732, tzinfo=utc))
+  createdAt = models.DateTimeField(auto_now_add=True)
   rating = models.IntegerField(blank=True)
-  user = models.ForeignKey(User, on_delete=models.CASCADE)
-  book = models.ForeignKey(Book, on_delete=models.CASCADE)
+  book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name="reviews")
+  user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
   def __str__(self):
     return f"{self.content}, rating:{self.rating} createdAt:{self.createdAt}"
   

@@ -1,0 +1,60 @@
+{% extends "mybook/base.html" %}
+
+{% block title %}
+More
+{% endblock %}
+
+{% block body %}
+<div class="row" style="padding-top: 60px;">
+  <div class="col-md-6">
+    <h1 style="margin-bottom: 30px;">{{ book.title }}</h1>
+    <p><b>Author:</b> {{ book.author }}</p>
+    <p><b>Published year:</b> {{ book.year }}</p>
+    <p><b>Ratings:</b> {{ api_book_info.work_ratings_count}}</p>
+    <p><b>Avg rating:</b> {{ api_book_info.average_rating}}</p>
+    <p><b>ISBN:</b> {{ book.isbn }}</p>   
+    <a class="btn btn-outline-secondary" href="{% url 'index' %}" role="button">Back to Search</a>
+  </div>  
+
+  <div style="background-color: beige; padding: 20px 30px;" class="col-md-6">
+    <div class="d-flex justify-content-between">
+      <h4>Friend Reviews</h4>
+      <form action="{% url 'add_review' book.id %}">
+        <button class="btn btn-success">Write a review</button>
+      </form>
+    </div>
+    
+  <hr/>
+    {% if not reviews %}
+      <div class="alert alert-info text-center" role="alert">
+        There is no reviews yet.
+      </div>
+    {% else %}
+    <ul>
+      {% for review in reviews %}
+        <li>
+          <div style="display: flex; justify-content: space-between;">
+            <span>by {{ review.user.username }}</span>
+            <span> {{ review.createdAt }}</span>
+          </div>
+          <br/>
+          <div style="display: flex; justify-content: space-between;">
+            <h6>Rating: {{ review.rating }}</h6> 
+          {% if review.user.username == request.user.username %}
+            <a class="btn btn-secondary btn-sm" role="button" href="#" >Edit</a>
+          {% endif %}
+          </div>
+          <p>{{ review.content }}</p>
+          <hr/>
+
+        </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    
+  </div>  
+
+</div>
+{% endblock %}
+
+
