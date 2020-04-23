@@ -41,7 +41,7 @@ More
           <div style="display: flex; justify-content: space-between;">
             <h6>Rating: {{ review.rating }}</h6> 
           {% if review.user.username == request.user.username %}
-            <a class="btn btn-secondary btn-sm" role="button" href="#" >Edit</a>
+            <a class="btn btn-secondary btn-sm" role="button" href="{% url 'edit_review' book.id review.id %}" >Edit</a>
           {% endif %}
           </div>
           <p>{{ review.content }}</p>
