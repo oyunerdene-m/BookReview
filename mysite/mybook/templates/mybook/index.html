@@ -2,28 +2,42 @@
 {% block title %} Search {% endblock %}
 
 {% block body %}
+{% load static %}
 {% if request.user.is_authenticated %}
 {% if message %}
   <div class="alert alert-primary text-center" role="alert">
     {{ message }}
   </div>
 {% endif %}
-<div class="row" style="padding-top: 40px;">
+<div class="row">
   <div class="col-md-8 offset-md-2">
     <br/>
-    <h4 style="margin-bottom: 30px;">Search Your Book:</h4>
-    <form action="{% url 'search' %}" method="get">
+    <h4 style="margin-bottom: 15px;">Search Your Book:</h4>
+    <form style="margin-bottom: 20px;" id="form">
       {% csrf_token %}
       <div class="form-group">
-          <input name="search" type="text" placeholder="Search..." class="form-control">
+          <input name='search' id="search" type="text" placeholder="Search..." class="form-control">
       </div>
-      <button class="btn btn-primary" type="submit">Search</button>
+      <button class="btn btn-primary btn-sm" type="submit">Search</button>
     </form>
+    <ul id="search_result">
+     
+    </ul>
   </div>
 </div>
 {% else %}
-{% load static %}
   <img style="max-width: 100%; height:auto;" src="{% static 'images/home.jpg' %}" alt="My image">
 {% endif %}
 
+{% verbatim %}
+  <script id="result" type="text/x-handlebars-template">
+    {{#each books}}
+    <li>
+      <a href="/book/{{ this.id }}">{{ this.title }}</a> <br>
+      <span>ID: {{ this.id }}, by {{ this.author }}, published: {{ this.year }}</span>
+    </li>   
+    {{/each}}
+  </script>
+  {% endverbatim %}
+  <script src="{% static 'js/search.js' %}"></script>
 {% endblock %}

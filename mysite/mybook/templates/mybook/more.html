@@ -3,7 +3,7 @@
 {% block title %}
 More
 {% endblock %}
-
+{% load static %}
 {% block body %}
 <div class="row" style="padding-top: 60px;">
   <div class="col-md-6">
@@ -13,48 +13,61 @@ More
     <p><b>Ratings:</b> {{ api_book_info.work_ratings_count}}</p>
     <p><b>Avg rating:</b> {{ api_book_info.average_rating}}</p>
     <p><b>ISBN:</b> {{ book.isbn }}</p>   
-    <a class="btn btn-outline-secondary" href="{% url 'index' %}" role="button">Back to Search</a>
-  </div>  
-
-  <div style="background-color: beige; padding: 20px 30px;" class="col-md-6">
-    <div class="d-flex justify-content-between">
-      <h4>Friend Reviews</h4>
-      <form action="{% url 'add_review' book.id %}">
-        <button class="btn btn-success">Write a review</button>
+    <a class="btn btn-outline-secondary btn-sm" href="{% url 'index' %}" role="button">Back to Search</a>
+    <div class="add-review" style="margin-top: 20px;">
+      <h5>Write a review</h5>
+      <form id="add-form" method='post'>
+        {% csrf_token %}
+        <div class="form-group">
+          <label>What's your opinion about it?</label>
+          <textarea id="content" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="Select1">Your rating</label>
+          <select id="rating" class="form-control" id="Select1">
+            <option value="" selected disabled>choose</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <button style="margin-top: 20px; display: block;" class="btn btn-secondary">Add</button>
       </form>
     </div>
-    
-  <hr/>
-    {% if not reviews %}
-      <div class="alert alert-info text-center" role="alert">
-        There is no reviews yet.
-      </div>
-    {% else %}
-    <ul>
-      {% for review in reviews %}
-        <li>
-          <div style="display: flex; justify-content: space-between;">
-            <span>by {{ review.user.username }}</span>
-            <span> {{ review.createdAt }}</span>
-          </div>
-          <br/>
-          <div style="display: flex; justify-content: space-between;">
-            <h6>Rating: {{ review.rating }}</h6> 
-          {% if review.user.username == request.user.username %}
-            <a class="btn btn-secondary btn-sm" role="button" href="{% url 'edit_review' book.id review.id %}" >Edit</a>
-          {% endif %}
-          </div>
-          <p>{{ review.content }}</p>
-          <hr/>
-
-        </li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    
   </div>  
+  <div class="col-md-6" style="background-color: beige; padding: 10px 20px;">
+    <button id="reviews-button" class="btn btn-primary btn-sm">Show reviews</button>
+    <ul id="reviews" style="line-height: 1; margin-top: 15px;">
 
+    </ul> 
+  </div>  
 </div>
+{% verbatim %}
+  <script id="result" type="text/x-handlebars-template">
+    {{#each reviews}}
+      <li>
+        <div style="display: flex; justify-content: space-between;">
+          <span>by {{this.username}}</span>
+          <span> {{ this.createdAt }}</span>
+        </div>
+        <br/>
+        <div style="display: flex; justify-content: space-between;">
+          <h6>Rating: {{ this.rating }}</h6> 
+          <!-- [{{#if this.username }}
+              <a class="btn btn-secondary btn-sm" role="button" href=" " >Edit</a>
+          {{/if}}] -->
+        </div>
+        <p>{{ this.content }}</p>
+        <hr/>
+      </li>
+    {{/each}}
+
+  </script>
+{% endverbatim %}
+
+<script src="{% static 'js/reviews.js' %}"></script>
 {% endblock %}
 
 
